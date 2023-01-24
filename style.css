@@ -1,0 +1,170 @@
+.buttonCrear {
+    border-radius: 80px;
+    background-image: url("./BOTONESARBOLES/Crear.png");
+}
+
+.buttonAbrir {
+    border-radius: 80px;
+    background-image: url("./BOTONESARBOLES/ABRIR.png");
+}
+.buttonBuscar{
+    border-radius: 80px;
+    background-image: url("./BOTONESARBOLES/BUSCAR.png");
+}
+.buttonDetalles {
+    border-radius: 80px;
+    background-image: url("./BOTONESARBOLES/DETALLES.png");
+}
+
+.buttonInsertar {
+    border-radius: 80px;
+    background-image: url("./BOTONESARBOLES/INSERTAR.png");
+}
+.buttonEliminar {
+    /* border-radius: 80px; */
+    background-image: url("./Arbol//ELIMINAR.png");
+    background-position: center;
+}
+.combo-box {
+    background-image: url("path/to/image.png");
+    background-repeat: no-repeat;
+}
+
+/* Subelement;hover for buttons */
+.buttonCrear:hover {
+    border-color: aqua;
+    box-shadow: 0px 0px 15px rgb(255, 255, 255);
+}
+#cajita{
+    /* background:rgb(0, 255, 242); */
+   background-image: url("./Arbol/background.png");
+}
+
+#cajitaInt{
+    background:rgb(5, 61, 58); 
+}
+
+
+
+
+#box {
+    background-image: linear-gradient(0deg, #03bb85, #256D7B);
+}
+.images:hover {
+    box-shadow: 2px 2px 20px 10px whitesmoke;
+    border-width: 0;
+    
+}
+.button {
+    background: rgba(1, 1, 1, 0);
+    color: whitesmoke;
+    /* box-shadow: 2px 2px 2px 10px rgba(0, 0, 0, 0.2); */
+    font-size: 20px;
+    transition: all 0.5s;
+    border-radius: 10%;
+    box-shadow: rgba(0, 0, 0, 0) 0px 19px 38px, rgba(0, 0, 0, 0) 0px 15px 12px;
+}
+.buttonImage {
+    background: rgba(1, 1, 1, 0);
+    /* border:0; */
+    border-style: none;
+    border-top-style: none;
+}
+.buttonImageBox {
+    background: rgba(1, 1, 1, 0);
+    /* border:0; */
+    /* border-style: none; */
+}
+.button:hover {
+    box-shadow: 2px 2px 20px 10px whitesmoke;
+    border-width: 0;
+}
+.disco {
+    background-image: linear-gradient(0deg, #03bb85 50%, #256D7B);
+    border-radius: 50%;
+    box-shadow: 2px 2px 20px 3px whitesmoke, inset 0 0 14px whitesmoke;
+}
+.button-close {
+    color: whitesmoke;
+    background: rgb(86, 200, 200);
+    transition: all 1s;
+} 
+.label-close {
+    font-size: 18px;
+    font-weight: 900;
+    color: red;
+}
+.button-close:hover {
+    color: rgb(86, 200, 200);
+    background: whitesmoke;
+}
+#box-close {
+    background: linear-gradient(0deg, whitesmoke, rgb(24, 99, 247));
+}
+/* Styles for window selected number dics */
+.button-disc {
+    color: whitesmoke;
+    background: darkcyan;
+    transition: all 1s;
+}
+.button-disc:hover {
+    color: darkcyan;
+    background: whitesmoke;
+    font-weight: 800;
+}
+.label-disc {
+    font-size: 22px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: rgb(37, 36, 36);
+    text-decoration: solid;
+}
+/* Style for widow the table score */
+#box-score {
+    background: rgb(0, 0, 0);
+    border-color: rgb(185, 255, 237);
+    border-width: 3px;
+
+}
+.table-score {
+    background: rgb(49, 0, 139);
+    border-color: rgb(185, 255, 237);
+    border-width: 30px;
+}
+/* styles for disc */
+.button-disc {
+    border-radius: 15%;
+    /* background: linear-gradient(0deg rgba(6, 211, 215, 0.98), 65% rgb(0, 133, 140)); */
+}
+
+
+
+
+.buttonPlay {
+
+    background: rgb(49, 0, 139);
+}
+
+.buttonHelp{
+
+    background: rgb(24, 99, 247);
+}
+
+
+
+.buttonScore{
+
+    background: rgb(127, 0, 139);
+}
+
+.buttonCrear{
+
+    background: rgb(79, 139, 0);
+}
+
+.buttonExit {
+
+    background: rgb(140, 0, 0);
+
+}
