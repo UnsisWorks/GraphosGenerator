@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <gtk/gtk.h>
 #include <string.h>
-#include "grafo.h"
+#include "grafo.c"
  
 
 GtkCellRenderer *renderer;
@@ -68,41 +68,26 @@ static void openFile (GtkApplication* app, gpointer user_data) {
 
         if (file != NULL) {
 
-          int V = 7;  // número de vértices
-          int matriz[10][10];
-          int contador_arcos = 0;
-          srand(time(0));
-
-          for (int i = 0; i < 7; i++) {
-              for (int j = 0; j < 8; j++) {
-                  fscanf(file, "%d", &matriz[i][j]);
-                  if(matriz[i][j] == 1) contador_arcos++;
-              }
-          }
-          fclose(file);
-
-          for (int i = 0; i < 7; i++) {
-
-              for (int j = 0; j < 8; j++) {
-                  printf("%d-", matriz[i][j]);
-              }
-              puts("");   
-          }
+            int *vector = (int *) malloc(sizeof(int)); //Asigna memoria al vector antes de llamar a realloc()
+            int tamanio = 0; //Variable para llevar el registro del tamaño del vector
+            int valor;
+            char caracter;
         
+            file = fopen("matriz.txt", "r"); //Abre el archivo en modo lectura
 
-          // Creando grafo con V vértices y E arcos
-          struct Grafo* grafo = crearGrafo(V, contador_arcos);
-          int k = 0;
-          for (int i = 0; i < 7; i++) {
-              for (int j = 0; j < 8; j++) {
-                  if(matriz[i][j] == 1) {
-                    grafo->arcos[k].src = i;
-                    grafo->arcos[k].dest = j;
-                    grafo->arcos[k].peso = rand() % 50;  // asigna un peso aleatorio entre 0 y 50
-                    k++;
-                  }
-              }
-          }
+            // Save data for in array 
+            while((caracter = fgetc(file)) != EOF) { //Lee caracter por caracter hasta el fin del archivo
+                if(caracter != '-') { //Compara si el caracter es diferente de "-"
+                    valor = caracter - '0'; //Convierte el caracter a un número
+                    tamanio++;
+                    vector = (int *) realloc(vector, tamanio * sizeof(int)); //Aumenta el tamaño del vector
+                    // puts("Abierto");
+                    vector[tamanio-1] = valor; //Agrega el valor al vector
+                }
+            }
+
+            fclose(file); //Cierra el archivo
+
         }
     }    
 }
