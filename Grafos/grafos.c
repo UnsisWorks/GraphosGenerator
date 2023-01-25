@@ -211,7 +211,7 @@ static void activate (GtkApplication *app, gpointer user_data) {
     // Add signals at buttons
 
     g_signal_connect(buttonCreate, "clicked", G_CALLBACK(windowCreate), NULL);
-    g_signal_connect(buttonOpen, "clicked", G_CALLBACK(windowOpen), NULL);
+    g_signal_connect(buttonOpen, "clicked", G_CALLBACK(openFile), NULL);
     g_signal_connect(buttonAbout, "clicked", G_CALLBACK(windowAbout), NULL);
     g_signal_connect(buttonExit, "clicked", G_CALLBACK(salir), NULL);
 
