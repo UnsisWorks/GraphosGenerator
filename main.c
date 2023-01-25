@@ -55,6 +55,53 @@ gchar* getFileName () {
         printf("Archivo seleccionado: %s\n", filename);
     return filename;
 }
+ 
+static void showWidget() {
+    GtkWidget *box  = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
+    gtk_widget_set_name(GTK_WIDGET(box), "show-grapho");
+
+    GtkWidget *image;
+
+    GtkWidget *showWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_default_size(GTK_WINDOW(showWindow), 750, 450);
+    gtk_window_set_title(GTK_WINDOW(showWindow), "Grafo dirigido");
+    gtk_window_set_resizable(GTK_WINDOW(showWindow), FALSE);
+    gtk_window_set_position(GTK_WINDOW(showWindow), GTK_WIN_POS_CENTER_ALWAYS);
+
+    image = gtk_image_new_from_file("./grafo.png");
+    gtk_container_add(GTK_CONTAINER(box), image);
+    gtk_container_add(GTK_CONTAINER(showWindow), box);
+
+    gtk_widget_show_all(showWindow);
+}
+
+void exportar_grafo_dot(struct Grafo *grafo, char *nombre_archivo) {
+    int i, j;
+    FILE *archivo = fopen(nombre_archivo, "w");
+    if(archivo == NULL) {
+        printf("Error al crear el archivo %s", nombre_archivo);
+        return;
+    }
+    // fprintf(archivo, "digraph {\n");
+
+    fprintf(archivo, "digraph %s {\n\tnode[shape = %s fillcolor = \"%s\" style = filled]\n", "grafo", "none", "#ffffff");
+    
+    fprintf(archivo, "\tbgcolor=transparent;\n");
+    fprintf(archivo, "\tbgimage=\"./image/Fondo.png\";\n");
+    fprintf(archivo, "\tnode [shape=none, image=\"./image/Estrella.png\"];\n");
+
+    for(i = 0; i < grafo->num_nodos; i++) {
+        for(j = 0; j < grafo->num_nodos; j++) {
+            if(grafo->matriz_adyacencia[i][j] != 0) {
+                fprintf(archivo, "    %d -> %d [label=%d];\n", i + 1, j + 1, grafo->matriz_adyacencia[i][j]);
+            }
+
+        }
+    }
+    // fprintf(archivo, "\t}");
+    fprintf(archivo, "}");
+    fclose(archivo);
+}
 
 static void openFile (GtkApplication* app, gpointer user_data) {
     puts("1");
@@ -88,6 +135,45 @@ static void openFile (GtkApplication* app, gpointer user_data) {
 
             fclose(file); //Cierra el archivo
 
+            // Search size for array bidimencional
+            int size = 0;
+            for(int i = 0; i < tamanio; i++) {
+                if (vector[i] == 0-38) {
+                    puts("");
+                    size = i;
+                    printf("size: %d\n", i);
+                    break;
+                }
+            }
+            int data[size][size];
+            int aux = 0;
+            int k = 0;
+            for(int i = 0; i < tamanio; i++) {
+                // printf("%d ", vector[i]);
+                if (vector[i] == -38) {
+                    // puts("");
+                    aux = i + 1;
+                    k++;
+                } else {
+                    data[i - aux][k] = vector[i];    
+                    // printf("i: %d j: %d, total: %d\n", i - aux, k, tamanio);
+                }
+            }
+            free(vector);
+            // Print data
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+                    printf("%d-", data[j][i]);
+                }
+                puts("");
+            }
+            struct Grafo* grapho = (struct Grafo *) malloc(sizeof(struct Grafo));;
+            inicializar_grafo(grapho, size, data);
+            imprimir_grafo(grapho);
+            exportar_grafo_dot(grapho, "grafo.dot");
+
+            system("dot -Tpng -Gsize=600,600 -o grafo.png grafo.dot");
+            showWidget();
         }
     }    
 }

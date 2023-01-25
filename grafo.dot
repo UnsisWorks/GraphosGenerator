@@ -1,0 +1,18 @@
+digraph grafo {
+	node[shape = none fillcolor = "#ffffff" style = filled]
+	bgcolor=transparent;
+	bgimage="./image/Fondo.png";
+	node [shape=none, image="./image/Estrella.png"];
+    1 -> 2 [label=4];
+    1 -> 4 [label=7];
+    2 -> 1 [label=8];
+    2 -> 3 [label=6];
+    2 -> 5 [label=4];
+    3 -> 2 [label=6];
+    3 -> 4 [label=7];
+    4 -> 1 [label=3];
+    4 -> 3 [label=10];
+    4 -> 5 [label=2];
+    5 -> 2 [label=3];
+    5 -> 4 [label=8];
+}

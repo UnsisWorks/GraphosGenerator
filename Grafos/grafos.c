@@ -10,8 +10,7 @@
   GString * bin;
   gint i;
 // Function to open a dialog box with a message
-static void advertencia (GtkWindow *parent, gchar *message)
-{
+static void advertencia (GtkWindow *parent, gchar *message) {
  GtkWidget *dialog, *label, *content_area;
  GtkDialogFlags flags;
 
@@ -31,15 +30,147 @@ static void advertencia (GtkWindow *parent, gchar *message)
  gtk_widget_show_all (dialog);
 
 }
+static void limit_text(GtkTextBuffer *buffer, GtkTextIter *new_text, GtkTextIter *new_text_end, gpointer user_data) {
+    gint len = gtk_text_buffer_get_char_count(buffer);
+    printf(" estas aqui?");
+    if (len > 150) {
+      printf(" estas aqui?");
+        gtk_text_buffer_delete(buffer, new_text, new_text_end);
+        printf(" estas aqui?");
+    }
+}
 
 
+static void windowCreate (GtkApplication *app, gpointer user_data) {
+  GtkWidget *Createwindow;
+  GtkWidget *Createbox;
+  GtkCssProvider *cssProvider;
+  GtkWidget *textArea;
+  GtkWidget *textScroll;
+
+
+  Createbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+
+  //datos necesarios para poder crear el text area
+    textArea = gtk_text_view_new();
+    //texScroll es necesario ya que contendra a el text view
+    textScroll = gtk_scrolled_window_new(NULL, NULL);
+
+    gtk_container_add(GTK_CONTAINER(textScroll), textArea);
+    gtk_container_add(GTK_CONTAINER(Createbox), textScroll);
+
+    GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textArea));
+    gtk_text_buffer_set_text(buffer, "texto inicial", -1);
+    gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(textArea), GTK_WRAP_NONE);
+    gtk_widget_show(textArea);
+    g_signal_connect(buffer, "insert-text", G_CALLBACK(limit_text), NULL);
+
+
+
+    cssProvider = gtk_css_provider_new();
+
+    // Set properties for winow
+    Createwindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_position(GTK_WINDOW(Createwindow), GTK_WIN_POS_CENTER);
+    gtk_window_set_title (GTK_WINDOW (Createwindow), "CREATE");
+    gtk_window_set_default_size (GTK_WINDOW (Createwindow), 650, 700);
+    gtk_window_set_resizable(GTK_WINDOW(Createwindow), FALSE);
+
+
+    gtk_widget_set_name(GTK_WIDGET(Createbox), "Createbox");
+
+    gtk_css_provider_load_from_path(cssProvider, "./style.css", NULL);
+    gtk_style_context_add_provider_for_screen(gdk_screen_get_default(),
+                                            GTK_STYLE_PROVIDER(cssProvider),
+                                            GTK_STYLE_PROVIDER_PRIORITY_USER);
+
+    gtk_container_add(GTK_CONTAINER(Createwindow), Createbox);
+    gtk_widget_show_all (Createwindow);
+
+
+
+
+
+
+
+}
+
+
+static void windowOpen (GtkApplication *app, gpointer user_data) {
+  GtkWidget *Openwindow;
+  GtkWidget *Openbox;
+  GtkCssProvider *cssProvider;
+
+
+  Openbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+
+    cssProvider = gtk_css_provider_new();
+
+    // Set properties for winow
+   Openwindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_position(GTK_WINDOW(Openwindow), GTK_WIN_POS_CENTER);
+    gtk_window_set_title (GTK_WINDOW (Openwindow), "OPEN");
+    gtk_window_set_default_size (GTK_WINDOW (Openwindow), 650, 700);
+    gtk_window_set_resizable(GTK_WINDOW(Openwindow), FALSE);
+
+
+    gtk_widget_set_name(GTK_WIDGET(Openbox), "Openbox");
+
+    gtk_css_provider_load_from_path(cssProvider, "./style.css", NULL);
+    gtk_style_context_add_provider_for_screen(gdk_screen_get_default(),
+                                            GTK_STYLE_PROVIDER(cssProvider),
+                                            GTK_STYLE_PROVIDER_PRIORITY_USER);
+
+    gtk_container_add(GTK_CONTAINER(Openwindow), Openbox);
+    gtk_widget_show_all (Openwindow);
+
+
+
+}
+
+static void windowAbout (GtkApplication *app, gpointer user_data) {
+  GtkWidget *Aboutwindow;
+  GtkWidget *Aboutbox;
+  GtkCssProvider *cssProvider;
+
+
+  Aboutbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+
+    cssProvider = gtk_css_provider_new();
+
+    // Set properties for winow
+    Aboutwindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_position(GTK_WINDOW(Aboutwindow), GTK_WIN_POS_CENTER);
+    gtk_window_set_title (GTK_WINDOW (Aboutwindow), "ABOUT");
+    gtk_window_set_default_size (GTK_WINDOW (Aboutwindow), 650, 700);
+    gtk_window_set_resizable(GTK_WINDOW(Aboutwindow), FALSE);
+
+
+    gtk_widget_set_name(GTK_WIDGET(Aboutbox), "Aboutbox");
+
+    gtk_css_provider_load_from_path(cssProvider, "./style.css", NULL);
+    gtk_style_context_add_provider_for_screen(gdk_screen_get_default(),
+                                            GTK_STYLE_PROVIDER(cssProvider),
+                                            GTK_STYLE_PROVIDER_PRIORITY_USER);
+
+    gtk_container_add(GTK_CONTAINER(Aboutwindow), Aboutbox);
+    gtk_widget_show_all (Aboutwindow);
+
+
+
+}
+
+
+static void salir (){
+  exit(-1);
+}
 
 
 
 static void activate (GtkApplication *app, gpointer user_data) {
     GtkWidget *mainwindow;
-    GtkWidget *buttBoxCrear, *buttBoxPlay, *buttBoxHelp, *buttBoxScore, *buttBoxExit, *box;
-    GtkWidget *buttonCrear, *buttonPlay, *buttonHelp, *buttonScore, *buttonExit;
+    GtkWidget *buttBoxCreate, *buttBoxOpen, *buttBoxAbout, *buttBoxRoad, *buttBoxExit,*box;
+    GtkWidget *buttonCreate, *buttonOpen, *buttonAbout, *buttonRoad,  *buttonExit;
     GtkWidget *imageExit, *imageAcer, *imagePlay, *imageScore, *imageSett;
     GtkCssProvider *cssProvider;
     // Load images for buttons
@@ -54,75 +185,89 @@ static void activate (GtkApplication *app, gpointer user_data) {
     // Create container fixed
     box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     gtk_box_set_homogeneous(GTK_BOX(box), TRUE);
+    // gtk_widget_set_margin_start(GTK_WIDGET(box), 20);
 
     // Create box for buttons
-    buttBoxCrear = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
-    buttBoxPlay = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
-    buttBoxHelp = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
-    buttBoxScore = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
+    buttBoxCreate = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
+    buttBoxOpen = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
+    buttBoxAbout = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
+    buttBoxRoad = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
     buttBoxExit = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 
     // Create buttons and add at box container
-    buttonCrear = gtk_button_new();
-    buttonHelp = gtk_button_new();
-    buttonPlay = gtk_button_new();
-    buttonScore = gtk_button_new();
+    buttonCreate = gtk_button_new();
+    buttonRoad = gtk_button_new();
+    buttonOpen = gtk_button_new();
+    buttonAbout = gtk_button_new();
     buttonExit = gtk_button_new();
 
-    // gtk_button_set_image(GTK_BUTTON(buttonPlay), imagePlay);
-    // gtk_button_set_image(GTK_BUTTON(buttonScore), imageScore);
-    // gtk_button_set_image(GTK_BUTTON(buttonHelp), imageSett);
-    // gtk_button_set_image(GTK_BUTTON(buttonCrear), imageAcer);
+    // gtk_button_set_image(GTK_BUTTON(buttonOpen), imagePlay);
+    // gtk_button_set_image(GTK_BUTTON(buttonAbout), imageScore);
+    // gtk_button_set_image(GTK_BUTTON(buttonRoad), imageSett);
+    // gtk_button_set_image(GTK_BUTTON(buttonCreate), imageAcer);
     // gtk_button_set_image(GTK_BUTTON(buttonExit), imageExit);
 
 
     // Add signals at buttons
-    //g_signal_connect(buttonPlay, "clicked", G_CALLBACK(initGame), NULL);
-    //g_signal_connect(buttonCrear, "clicked", G_CALLBACK(acercaDe), NULL);
-    //g_signal_connect(buttonScore, "clicked", G_CALLBACK(windowScore), NULL);
+
+    g_signal_connect(buttonCreate, "clicked", G_CALLBACK(windowCreate), NULL);
+    g_signal_connect(buttonOpen, "clicked", G_CALLBACK(windowOpen), NULL);
+    g_signal_connect(buttonAbout, "clicked", G_CALLBACK(windowAbout), NULL);
+    g_signal_connect(buttonExit, "clicked", G_CALLBACK(salir), NULL);
+
+
 
     // Add buttons  at button box
-    gtk_container_add(GTK_CONTAINER(buttBoxCrear), buttonCrear);
-    gtk_container_add(GTK_CONTAINER(buttBoxHelp), buttonHelp);
-    gtk_container_add(GTK_CONTAINER(buttBoxPlay), buttonPlay);
-    gtk_container_add(GTK_CONTAINER(buttBoxScore), buttonScore);
+    gtk_container_add(GTK_CONTAINER(buttBoxCreate), buttonCreate);
+    gtk_container_add(GTK_CONTAINER(buttBoxAbout), buttonRoad);
+    gtk_container_add(GTK_CONTAINER(buttBoxOpen), buttonOpen);
+    gtk_container_add(GTK_CONTAINER(buttBoxRoad), buttonAbout);
     gtk_container_add(GTK_CONTAINER(buttBoxExit), buttonExit);
     
     // Add buttons at box
-    gtk_container_add(GTK_CONTAINER(box), buttBoxPlay);
-    gtk_container_add(GTK_CONTAINER(box), buttBoxScore);
-    gtk_container_add(GTK_CONTAINER(box), buttBoxHelp);
-    gtk_container_add(GTK_CONTAINER(box), buttBoxCrear);
+    gtk_container_add(GTK_CONTAINER(box), buttBoxCreate);
+    gtk_container_add(GTK_CONTAINER(box), buttBoxOpen);
+    gtk_container_add(GTK_CONTAINER(box), buttBoxRoad);
+    gtk_container_add(GTK_CONTAINER(box), buttBoxAbout);
+    
     gtk_container_add(GTK_CONTAINER(box), buttBoxExit);
 
-    gtk_widget_set_size_request(GTK_WIDGET(buttonCrear), 240, 80);
-    gtk_widget_set_size_request(GTK_WIDGET(buttonHelp), 240, 80);
-    gtk_widget_set_size_request(GTK_WIDGET(buttonPlay), 240, 80);
-    gtk_widget_set_size_request(GTK_WIDGET(buttonScore), 240,80);
-    gtk_widget_set_size_request(GTK_WIDGET(buttonExit), 240, 80);
+    gtk_widget_set_size_request(GTK_WIDGET(buttonCreate), 240, 60);
+    gtk_widget_set_size_request(GTK_WIDGET(buttonRoad), 240, 60);
+    gtk_widget_set_size_request(GTK_WIDGET(buttonOpen), 240, 60);
+    gtk_widget_set_size_request(GTK_WIDGET(buttonAbout), 240,60);
+    gtk_widget_set_size_request(GTK_WIDGET(buttonExit), 240, 60);
 
     
     
-    gtk_style_context_add_class(gtk_widget_get_style_context(buttonCrear), "button");
-    gtk_style_context_add_class(gtk_widget_get_style_context(buttonHelp), "button");
-    gtk_style_context_add_class(gtk_widget_get_style_context(buttonPlay), "button");
-    gtk_style_context_add_class(gtk_widget_get_style_context(buttonScore), "button");
+    gtk_style_context_add_class(gtk_widget_get_style_context(buttonCreate), "button");
+    gtk_style_context_add_class(gtk_widget_get_style_context(buttonRoad), "button");
+    gtk_style_context_add_class(gtk_widget_get_style_context(buttonOpen), "button");
+    gtk_style_context_add_class(gtk_widget_get_style_context(buttonAbout), "button");
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonExit), "button");
+    
+
+    gtk_style_context_add_class(gtk_widget_get_style_context(buttBoxCreate), "button-box");
+    gtk_style_context_add_class(gtk_widget_get_style_context(buttBoxRoad), "button-box");
+    gtk_style_context_add_class(gtk_widget_get_style_context(buttBoxOpen), "button-box");
+    gtk_style_context_add_class(gtk_widget_get_style_context(buttBoxAbout), "button-box");
+    gtk_style_context_add_class(gtk_widget_get_style_context(buttBoxExit), "button-box");
    /// gtk_style_context_add_class(gtk_widget_get_style_context(imageExit), "images");
 
 
      
-    gtk_style_context_add_class(gtk_widget_get_style_context(buttonCrear), "buttonCrear");
-    gtk_style_context_add_class(gtk_widget_get_style_context(buttonHelp), "buttonHelp");
-    gtk_style_context_add_class(gtk_widget_get_style_context(buttonPlay), "buttonPlay");
-    gtk_style_context_add_class(gtk_widget_get_style_context(buttonScore), "buttonScore");
+    gtk_style_context_add_class(gtk_widget_get_style_context(buttonCreate), "buttonCreate");
+    gtk_style_context_add_class(gtk_widget_get_style_context(buttonRoad), "buttonRoad");
+    gtk_style_context_add_class(gtk_widget_get_style_context(buttonOpen), "buttonOpen");
+    gtk_style_context_add_class(gtk_widget_get_style_context(buttonAbout), "buttonAbout");
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonExit), "buttonExit");
+    
         
     // Set properties for winow
     mainwindow = gtk_application_window_new (app);
     gtk_window_set_position(GTK_WINDOW(mainwindow), GTK_WIN_POS_CENTER);
-    gtk_window_set_title (GTK_WINDOW (mainwindow), "torreAs");
-    gtk_window_set_default_size (GTK_WINDOW (mainwindow), 650, 700);
+    gtk_window_set_title (GTK_WINDOW (mainwindow), "SUPER GRAFOS");
+    gtk_window_set_default_size (GTK_WINDOW (mainwindow), 400, 650);
     gtk_window_set_resizable(GTK_WINDOW(mainwindow), FALSE);
 
 
