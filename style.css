@@ -158,7 +158,8 @@
     font-weight: 600;
 }
 #show-grapho {
-    background-image: url("./image/fondo.png");
+    background-image: url("./image/Fondo2.png");
+    background-repeat: no-repeat;
 }
 
 .buttonPlay {
@@ -241,7 +242,12 @@
     background-repeat:no-repeat ;
 
 }
-
+#Aboutbox {
+    background-image: url("./image/AVATARES2.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    /* background-size: ; */
+}
 .button-box{
 
     border: none; 

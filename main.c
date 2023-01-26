@@ -55,9 +55,15 @@ gchar* getFileName () {
         printf("Archivo seleccionado: %s\n", filename);
     return filename;
 }
- 
+static void showMainWindow () {
+    gtk_widget_set_visible(GTK_WIDGET(mainwindow), FALSE);
+
+}
+
 static void showWidget() {
-    GtkWidget *box  = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
+    gtk_widget_set_visible(GTK_WIDGET(mainwindow), FALSE);
+    GtkWidget *box  = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_widget_set_size_request(GTK_WIDGET(box), 750, 450);
     gtk_widget_set_name(GTK_WIDGET(box), "show-grapho");
 
     GtkWidget *image;
@@ -67,6 +73,7 @@ static void showWidget() {
     gtk_window_set_title(GTK_WINDOW(showWindow), "Grafo dirigido");
     gtk_window_set_resizable(GTK_WINDOW(showWindow), FALSE);
     gtk_window_set_position(GTK_WINDOW(showWindow), GTK_WIN_POS_CENTER_ALWAYS);
+    g_signal_connect(showWindow, "destroy", G_CALLBACK(showMainWindow), NULL);
 
     image = gtk_image_new_from_file("./grafo.png");
     gtk_container_add(GTK_CONTAINER(box), image);
@@ -101,6 +108,7 @@ void exportar_grafo_dot(struct Grafo *grafo, char *nombre_archivo) {
     // fprintf(archivo, "\t}");
     fprintf(archivo, "}");
     fclose(archivo);
+    puts("Exportado");
 }
 
 static void openFile (GtkApplication* app, gpointer user_data) {
@@ -191,7 +199,6 @@ static void windowAbout (GtkApplication *app, gpointer user_data) {
 
   Aboutbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 
-    cssProvider = gtk_css_provider_new();
 
     // Set properties for winow
     Aboutwindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -203,10 +210,6 @@ static void windowAbout (GtkApplication *app, gpointer user_data) {
 
     gtk_widget_set_name(GTK_WIDGET(Aboutbox), "Aboutbox");
 
-    gtk_css_provider_load_from_path(cssProvider, "./style.css", NULL);
-    gtk_style_context_add_provider_for_screen(gdk_screen_get_default(),
-                                            GTK_STYLE_PROVIDER(cssProvider),
-                                            GTK_STYLE_PROVIDER_PRIORITY_USER);
 
     gtk_container_add(GTK_CONTAINER(Aboutwindow), Aboutbox);
     gtk_widget_show_all (Aboutwindow);
@@ -235,12 +238,78 @@ void inputText (GtkApplication *app, gpointer user_data) {
     gchar *text = gtk_text_buffer_get_text(GTK_TEXT_BUFFER(buffer), &start, &end, TRUE);
     printf("%s\n", text);
 
+    int band = 0;
+
     for (int i = 0; i < strlen(text); i++) {
         if (text[i] != '1' && text[i] != '0' && text[i] != '-' && text[i] != '\n') {
             printf("El caracter en la posicion %d no es valido\n", i);
+            band++;
         }
     }
 
+    if (band == 0) {
+        int n = 0, m = 0;
+        for (int i = 0; text[i] != '\0'; i++) {
+            if (text[i] == '1' || text[i] == '0') {
+                if (m == 0)
+                    n++;
+                // if(m == 0 && text[i] == '\n') 
+                //     m++;
+            }
+            if (text[i] == '\n') {
+                m++;
+            }
+                // printf("%d\n", m);
+        }
+        m++;
+        printf("%d == %d\n", n,m);
+        if(n == m) {
+        // puts("1");
+
+            int matriz[n][m];
+            
+            int aux = 0;
+            int k = 0;
+            for(int i = 0; text[i] != '\0'; i++) {
+                // printf("%d ", vector[i]);
+                if (!(text[i] != '\n')) {
+                    // puts("ln");
+                    aux = i + 1;
+                    k++;
+                } else {
+                    if (text[i] == '0') {
+                        matriz[i - aux][k] = 0;
+                        // printf("0.- mat: %d id: %d\n", matriz[i - aux][k], i);
+                    }
+                    if (text[i] == '1') {
+                        matriz[i - aux][k] = 1;
+                        // printf("1.- mat: %d id: %d\n", matriz[i - aux][k], i);
+                    }
+                    // matriz[i - aux][k] =  (int)text[i] - '0';    
+                    // printf("i: %d j: %d, total: %d\n", i - aux, k, matriz[i - aux][k]);
+                }
+            }
+
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    // printf("%d-", matriz[i][j]);
+                }
+                puts("");
+            }
+            
+              
+            puts("aqui");
+            printf("n:%d", n);
+            struct Grafo* grapho = (struct Grafo *) malloc(sizeof(struct Grafo));;
+            inicializar_grafo(grapho, n, matriz);
+            imprimir_grafo(grapho);
+            exportar_grafo_dot(grapho, "grafo.dot");
+            system("dot -Tpng -Gsize=600,600 -o grafo.png grafo.dot");
+            showWidget();
+        }
+            puts("fuera");
+
+    }
 }
 
 static void windowCreate (GtkApplication *app, gpointer user_data) {
