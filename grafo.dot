@@ -3,16 +3,16 @@ digraph grafo {
 	bgcolor=transparent;
 	bgimage="./image/Fondo.png";
 	node [shape=none, image="./image/Estrella.png"];
-    1 -> 2 [label=10 color="#ffffff" fontcolor=aqua];
-    1 -> 4 [label=4 color="#ffffff" fontcolor=aqua];
-    2 -> 1 [label=7 color="#ffffff" fontcolor=aqua];
-    2 -> 3 [label=1 color="#ffffff" fontcolor=aqua];
-    2 -> 5 [label=7 color="#ffffff" fontcolor=aqua];
-    3 -> 2 [label=3 color="#ffffff" fontcolor=aqua];
-    3 -> 4 [label=7 color="#ffffff" fontcolor=aqua];
-    4 -> 1 [label=2 color="#ffffff" fontcolor=aqua];
-    4 -> 3 [label=9 color="#ffffff" fontcolor=aqua];
-    4 -> 5 [label=8 color="#ffffff" fontcolor=aqua];
-    5 -> 2 [label=10 color="#ffffff" fontcolor=aqua];
-    5 -> 4 [label=3 color="#ffffff" fontcolor=aqua];
+    1 -> 2 [label=8 color="#ffffff" fontcolor=aqua];
+    1 -> 4 [label=1 color="#ffffff" fontcolor=aqua];
+    2 -> 1 [label=3 color="#ffffff" fontcolor=aqua];
+    2 -> 3 [label=5 color="#ffffff" fontcolor=aqua];
+    2 -> 5 [label=1 color="#ffffff" fontcolor=aqua];
+    3 -> 2 [label=2 color="#ffffff" fontcolor=aqua];
+    3 -> 4 [label=1 color="#ffffff" fontcolor=aqua];
+    4 -> 1 [label=1 color="#ffffff" fontcolor=aqua];
+    4 -> 3 [label=1 color="#ffffff" fontcolor=aqua];
+    4 -> 5 [label=1 color="#ffffff" fontcolor=aqua];
+    5 -> 2 [label=9 color="#ffffff" fontcolor=aqua];
+    5 -> 4 [label=7 color="#ffffff" fontcolor=aqua];
 }

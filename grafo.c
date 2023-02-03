@@ -21,8 +21,9 @@ void inicializar_grafo(struct Grafo *grafo, int num_nodos, int adyacencia[][num_
     // Asignar pesos aleatorios a las conexiones
     for(i = 0; i < num_nodos; i++) {
         for(j = 0; j < num_nodos; j++) {
-            if(adyacencia[j][i] == 1) {
-                grafo->matriz_adyacencia[i][j] = rand() % 10 + 1; // Asignar peso aleatorio entre 1 y 10
+            if(adyacencia[j][i] != 0) {
+                grafo->matriz_adyacencia[i][j] = adyacencia[j][i]; // Asignar peso aleatorio entre 1 y 10
+                printf("val: %d\n", adyacencia[j][i]);
             }
         }
     }

@@ -8,7 +8,7 @@ GtkCellRenderer *renderer;
 GtkWidget *mainwindow;
 GtkListStore *store;
 GString * bin;
-gint i; 
+gint i;
 
 // Function to open a dialog box with a message
 static void advertencia (GtkWindow *parent, gchar *message) {
@@ -56,12 +56,12 @@ gchar* getFileName () {
     return filename;
 }
 static void showMainWindow () {
-    gtk_widget_set_visible(GTK_WIDGET(mainwindow), FALSE);
+    gtk_widget_set_visible(GTK_WIDGET(mainwindow), TRUE);
 
 }
 
 static void showWidget() {
-    gtk_widget_set_visible(GTK_WIDGET(mainwindow), FALSE);
+    // gtk_widget_set_visible(GTK_WIDGET(mainwindow), FALSE);
     GtkWidget *box  = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_widget_set_size_request(GTK_WIDGET(box), 750, 450);
     gtk_widget_set_name(GTK_WIDGET(box), "show-grapho");
@@ -189,7 +189,6 @@ static void openFile (GtkApplication* app, gpointer user_data) {
 static void salir (){
   exit(-1);
 }
-
 
 static void windowAbout (GtkApplication *app, gpointer user_data) {
   GtkWidget *Aboutwindow;
