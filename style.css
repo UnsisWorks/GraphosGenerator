@@ -273,8 +273,11 @@
     color: whitesmoke;
     background: #256D7B;
 }
-
-
+.label-roat {
+    font-size: 18px;
+    color: rgb(5, 150, 117);
+    letter-spacing: normal;
+}
 
 
 

@@ -6,8 +6,9 @@
  
 struct Grafo* grap;
 GtkCellRenderer *renderer;
-GtkWidget *mainwindow;
+GtkWidget *mainwindow, *desde, *hasta, *dijsWindow, *showWindow, *fix, *label_dijkstra;
 GtkListStore *store;
+GString *camino;
 GString * bin;
 gint i;
 
@@ -34,11 +35,47 @@ static void advertencia (GtkWindow *parent, gchar *message) {
 }
 
 void searchRoat () {
-    dijkstra(grap, 0, 1);
+
+    int init = gtk_combo_box_get_active(GTK_COMBO_BOX(desde));
+    int end = gtk_combo_box_get_active(GTK_COMBO_BOX(hasta));
+    // int nodes[50];
+    printf("\n init: %d end: %d", init, end);
+    // printf("\ndistancia Final: %d", );
+    int request[grap->num_nodos];
+    dijkstra(grap, init, end, request);
+    
+    if (request == NULL)
+        puts("vaciooooo");
+
+    int *stack = malloc(end * sizeof(int));
+    int top = -1;
+    for (int i = end; i != -1; i = request[i]) {
+        stack[++top] = i + 1;
+    }
+    camino = g_string_new("");
+    while (top >= 0) {
+        // printf("%d <- ", stack[top--]);
+        char aux[5];
+        sprintf(aux, "%d", stack[top--]);
+        g_string_append(camino, aux);
+        g_string_append(camino, "-> ");
+    }
+    g_string_erase(camino, camino->len - 2,-1);
+    printf("\n");
+
+    free(stack);
+    printf("ruta: %s\n", camino->str);
+    gtk_widget_destroy(GTK_WIDGET(dijsWindow));
+    g_string_prepend(camino, "El camino mas corto es: ");
+    label_dijkstra = gtk_label_new(camino->str);
+    gtk_style_context_add_class(gtk_widget_get_style_context(label_dijkstra), "label-dijkstra");
+    gtk_style_context_add_class(gtk_widget_get_style_context(label_dijkstra), "label-roat");
+    gtk_fixed_put(GTK_FIXED(fix), label_dijkstra, 360, 100);
+    gtk_widget_show_all(GTK_WIDGET(fix));
 }
 
 void windowDijkstra () {
-    GtkWidget *dijsWindow, *box, *button, *buttonBox, *desde, *hasta, *fixed1, *fixed2;
+    GtkWidget *box, *button, *buttonBox, *fixed1, *fixed2;
     GtkWidget *labelDesde, *labelHasta, *fixed3;
     box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 50);
     gtk_box_set_homogeneous(GTK_BOX(box), TRUE);
@@ -121,7 +158,7 @@ static void showMainWindow () {
 
 static void showWidget() {
     gtk_widget_set_visible(GTK_WIDGET(mainwindow), FALSE);
-    GtkWidget *fix  = gtk_fixed_new();
+    fix  = gtk_fixed_new();
     GtkWidget *box  = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_widget_set_size_request(GTK_WIDGET(box), 720, 450);
     gtk_widget_set_name(GTK_WIDGET(box), "show-grapho");
@@ -136,7 +173,7 @@ static void showWidget() {
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonBox), "button-box-dijkstra");
 
 
-    GtkWidget *showWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    showWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_default_size(GTK_WINDOW(showWindow), 750, 450);
     gtk_window_set_title(GTK_WINDOW(showWindow), "Grafo dirigido");
     gtk_window_set_resizable(GTK_WINDOW(showWindow), FALSE);

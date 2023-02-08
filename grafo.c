@@ -3,6 +3,11 @@
 
 #define MAX_NODOS 100
 
+typedef struct Parameters {
+    int init;
+    int end;
+} parameters;
+
 struct Grafo {
     int matriz_adyacencia[MAX_NODOS][MAX_NODOS];
     int num_nodos;
