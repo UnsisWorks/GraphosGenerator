@@ -2,46 +2,40 @@
 #include <stdbool.h>
 #include "grafo.c"
 
-int minimo(int distancia[], bool visitados[], int n) {
-    // Inicializar el índice del vértice con la distancia mínima
-    int min = INT_MAX, min_index;
- 
-    for (int v = 0; v < n; v++)
-        if (visitados[v] == false && distancia[v] <= min)
-            min = distancia[v], min_index = v;
- 
-    return min_index;
-}
+#define MAX_NODOS 100
 
-void dijkstra(struct Grafo *grafo, int inicio) {
-    int distancia[grafo->num_nodos]; // Almacena la distancia mínima desde el origen a cada vértice
-    bool visitados[grafo->num_nodos]; // Almacena si un vértice ha sido visitado o no
- 
-    // Inicializar todas las distancias como infinito y todos los vértices como no visitados
-    for (int i = 0; i < grafo->num_nodos; i++) {
-        distancia[i] = INT_MAX;
+int dijkstra(struct Grafo *grafo, int nodo_inicial, int nodo_final) {
+    int distancias[MAX_NODOS];
+    bool visitados[MAX_NODOS];
+    int cantidad_nodos = grafo->num_nodos;
+    int i, j;
+
+    // Inicializar distancias y visitados
+    for (i = 0; i < cantidad_nodos; i++) {
+        distancias[i] = INT_MAX;
         visitados[i] = false;
     }
- 
-    // La distancia desde el origen a si mismo es siempre cero
-    distancia[inicio] = 0;
- 
-    // Encontrar la distancia mínima para todos los vértices
-    for (int i = 0; i < grafo->num_nodos - 1; i++) {
-        int u = minimo(distancia, visitados, grafo->num_nodos);
- 
-        visitados[u] = true;
- 
-        // Actualizar la distancia de los vértices adyacentes a u
-        for (int v = 0; v < grafo->num_nodos; v++) {
-            if (!visitados[v] && grafo->matriz_adyacencia[u][v] &&
-                distancia[u] != INT_MAX && distancia[u] + grafo->matriz_adyacencia[u][v] < distancia[v])
-                distancia[v] = distancia[u] + grafo->matriz_adyacencia[u][v];
+    distancias[nodo_inicial] = 0;
+
+    // Algoritmo de Dijkstra
+    for (i = 0; i < cantidad_nodos - 1; i++) {
+        int nodo_actual = INT_MAX;
+        int distancia_minima = INT_MAX;
+        for (j = 0; j < cantidad_nodos; j++) {
+            if (!visitados[j] && distancias[j] <= distancia_minima) {
+                nodo_actual = j;
+                distancia_minima = distancias[j];
+            }
+        }
+
+        visitados[nodo_actual] = true;
+
+        for (j = 0; j < cantidad_nodos; j++) {
+            int peso = grafo->matriz_adyacencia[nodo_actual][j];
+            if (!visitados[j] && peso && distancias[nodo_actual] != INT_MAX && distancias[nodo_actual] + peso < distancias[j])
+                distancias[j] = distancias[nodo_actual] + peso;
+       
         }
     }
- 
-    // Imprimir las distancias mínimas
-    printf("Vértice\tDistancia mínima desde el origen\n");
-    for (int i = 0; i < grafo->num_nodos; i++)
-        printf("%d\t\t%d\n", i, distancia[i]);
+        return distancias[nodo_final];
 }

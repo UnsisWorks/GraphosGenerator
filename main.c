@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <gtk/gtk.h>
 #include <string.h>
-#include "grafo.c"
+// #include "grafo.c"
+#include "dijkstra.c"
  
-
+struct Grafo* grap;
 GtkCellRenderer *renderer;
 GtkWidget *mainwindow;
 GtkListStore *store;
@@ -32,6 +33,64 @@ static void advertencia (GtkWindow *parent, gchar *message) {
 
 }
 
+void searchRoat () {
+    dijkstra(grap, 0, 1);
+}
+
+void windowDijkstra () {
+    GtkWidget *dijsWindow, *box, *button, *buttonBox, *desde, *hasta, *fixed1, *fixed2;
+    GtkWidget *labelDesde, *labelHasta, *fixed3;
+    box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 50);
+    gtk_box_set_homogeneous(GTK_BOX(box), TRUE);
+    fixed1 = gtk_fixed_new();
+    fixed2 = gtk_fixed_new();
+    fixed3 = gtk_fixed_new();
+
+    gtk_widget_set_name(GTK_WIDGET(box), "box-dijkstra");
+
+    button = gtk_button_new_with_label("Buscar");
+    buttonBox = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
+    g_signal_connect(button, "clicked", G_CALLBACK(searchRoat), NULL);
+
+    desde = gtk_combo_box_text_new();
+    hasta = gtk_combo_box_text_new();
+    labelDesde = gtk_label_new("Desde");
+    labelHasta = gtk_label_new("Hasta");
+
+    gtk_style_context_add_class(gtk_widget_get_style_context(labelDesde), "label-dijkstra");
+    gtk_style_context_add_class(gtk_widget_get_style_context(labelHasta), "label-dijkstra");
+    gtk_style_context_add_class(gtk_widget_get_style_context(button), "button-camino");
+
+    char str[10];
+    printf("%d\n", grap->num_nodos);
+    for (int i = 0; i < grap -> num_nodos; i++) {
+        sprintf(str, "%d", i + 1);
+        gtk_combo_box_text_insert_text(GTK_COMBO_BOX_TEXT(desde), i, str);
+        gtk_combo_box_text_insert_text(GTK_COMBO_BOX_TEXT(hasta), i, str);
+    }
+    gtk_combo_box_set_active(GTK_COMBO_BOX(desde), 0);
+    gtk_combo_box_set_active(GTK_COMBO_BOX(hasta), 0);
+
+    gtk_fixed_put(GTK_FIXED(fixed1), desde, 40, 60);
+    gtk_fixed_put(GTK_FIXED(fixed2), hasta, 40, 60);
+    gtk_fixed_put(GTK_FIXED(fixed1), labelDesde, 40, 10);
+    gtk_fixed_put(GTK_FIXED(fixed2), labelHasta, 40, 10);
+
+    // Set properties for winow
+    dijsWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_position(GTK_WINDOW(dijsWindow), GTK_WIN_POS_CENTER);
+    gtk_window_set_title (GTK_WINDOW (dijsWindow), "CREATE");
+    gtk_window_set_default_size (GTK_WINDOW (dijsWindow), 750, 460);
+    gtk_window_set_resizable(GTK_WINDOW(dijsWindow), FALSE);
+
+    gtk_container_add(GTK_CONTAINER(buttonBox), button);
+
+    gtk_container_add(GTK_CONTAINER(box), fixed1);
+    gtk_container_add(GTK_CONTAINER(box), fixed2);
+    gtk_container_add(GTK_CONTAINER(box), buttonBox);
+    gtk_container_add(GTK_CONTAINER(dijsWindow), box);
+    gtk_widget_show_all (dijsWindow);
+}
 
 gchar* getFileName () {
     GtkWidget *dialog;
@@ -61,12 +120,21 @@ static void showMainWindow () {
 }
 
 static void showWidget() {
-    // gtk_widget_set_visible(GTK_WIDGET(mainwindow), FALSE);
+    gtk_widget_set_visible(GTK_WIDGET(mainwindow), FALSE);
+    GtkWidget *fix  = gtk_fixed_new();
     GtkWidget *box  = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    gtk_widget_set_size_request(GTK_WIDGET(box), 750, 450);
+    gtk_widget_set_size_request(GTK_WIDGET(box), 720, 450);
     gtk_widget_set_name(GTK_WIDGET(box), "show-grapho");
 
     GtkWidget *image;
+    GtkWidget *button, *buttonBox;
+    buttonBox = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
+    button = gtk_button_new();
+    g_signal_connect(button, "clicked", G_CALLBACK(windowDijkstra), NULL);
+    gtk_widget_set_size_request(GTK_WIDGET(button), 70, 70);
+    gtk_style_context_add_class(gtk_widget_get_style_context(button), "button-dijkstra");
+    gtk_style_context_add_class(gtk_widget_get_style_context(buttonBox), "button-box-dijkstra");
+
 
     GtkWidget *showWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_default_size(GTK_WINDOW(showWindow), 750, 450);
@@ -76,7 +144,12 @@ static void showWidget() {
     g_signal_connect(showWindow, "destroy", G_CALLBACK(showMainWindow), NULL);
 
     image = gtk_image_new_from_file("./grafo.png");
-    gtk_container_add(GTK_CONTAINER(box), image);
+    
+    gtk_fixed_put(GTK_FIXED(fix), buttonBox, 670, 25);
+    gtk_fixed_put(GTK_FIXED(fix), image, 50, 25);
+    gtk_container_add(GTK_CONTAINER(buttonBox), button);
+    gtk_container_add(GTK_CONTAINER(box), fix);
+    // gtk_container_add(GTK_CONTAINER(fix), image);
     gtk_container_add(GTK_CONTAINER(showWindow), box);
 
     gtk_widget_show_all(showWindow);
@@ -179,7 +252,7 @@ static void openFile (GtkApplication* app, gpointer user_data) {
             inicializar_grafo(grapho, size, data);
             imprimir_grafo(grapho);
             exportar_grafo_dot(grapho, "grafo.dot");
-
+            grap=grapho;
             system("dot -Tpng -Gsize=600,600 -o grafo.png grafo.dot");
             showWidget();
         }
@@ -209,11 +282,8 @@ static void windowAbout (GtkApplication *app, gpointer user_data) {
 
     gtk_widget_set_name(GTK_WIDGET(Aboutbox), "Aboutbox");
 
-
     gtk_container_add(GTK_CONTAINER(Aboutwindow), Aboutbox);
     gtk_widget_show_all (Aboutwindow);
-
-
 
 }
 
@@ -299,11 +369,12 @@ void inputText (GtkApplication *app, gpointer user_data) {
               
             puts("aqui");
             printf("n:%d", n);
-            struct Grafo* grapho = (struct Grafo *) malloc(sizeof(struct Grafo));;
+            struct Grafo* grapho = (struct Grafo *) malloc(sizeof(struct Grafo));
             inicializar_grafo(grapho, n, matriz);
             imprimir_grafo(grapho);
             exportar_grafo_dot(grapho, "grafo.dot");
             system("dot -Tpng -Gsize=600,600 -o grafo.png grafo.dot");
+            grap = grapho;
             showWidget();
         }
             puts("fuera");
@@ -365,9 +436,9 @@ static void windowCreate (GtkApplication *app, gpointer user_data) {
 
 
 static void activate (GtkApplication *app, gpointer user_data) {
-    GtkWidget *mainwindow;
-    GtkWidget *buttBoxCreate, *buttBoxOpen, *buttBoxAbout, *buttBoxRoad, *buttBoxExit,*box;
-    GtkWidget *buttonCreate, *buttonOpen, *buttonAbout, *buttonRoad,  *buttonExit;
+    // GtkWidget *mainwindow;
+    GtkWidget *buttBoxCreate, *buttBoxOpen, *buttBoxAbout, *buttBoxExit,*box;
+    GtkWidget *buttonCreate, *buttonOpen, *buttonAbout,  *buttonExit;
     GtkWidget *imageExit, *imageAcer, *imagePlay, *imageScore, *imageSett;
     GtkCssProvider *cssProvider;
     // Load images for buttons
@@ -388,12 +459,12 @@ static void activate (GtkApplication *app, gpointer user_data) {
     buttBoxCreate = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
     buttBoxOpen = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
     buttBoxAbout = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
-    buttBoxRoad = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
+    // buttBoxRoad = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
     buttBoxExit = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 
     // Create buttons and add at box container
     buttonCreate = gtk_button_new();
-    buttonRoad = gtk_button_new();
+    // buttonRoad = gtk_button_new();
     buttonOpen = gtk_button_new();
     buttonAbout = gtk_button_new();
     buttonExit = gtk_button_new();
@@ -413,39 +484,37 @@ static void activate (GtkApplication *app, gpointer user_data) {
     g_signal_connect(buttonExit, "clicked", G_CALLBACK(salir), NULL);
 
 
-
     // Add buttons  at button box
     gtk_container_add(GTK_CONTAINER(buttBoxCreate), buttonCreate);
-    gtk_container_add(GTK_CONTAINER(buttBoxAbout), buttonRoad);
+    // gtk_container_add(GTK_CONTAINER(buttBoxAbout), buttonRoad);
     gtk_container_add(GTK_CONTAINER(buttBoxOpen), buttonOpen);
-    gtk_container_add(GTK_CONTAINER(buttBoxRoad), buttonAbout);
+    gtk_container_add(GTK_CONTAINER(buttBoxAbout), buttonAbout);
     gtk_container_add(GTK_CONTAINER(buttBoxExit), buttonExit);
     
     // Add buttons at box
     gtk_container_add(GTK_CONTAINER(box), buttBoxCreate);
     gtk_container_add(GTK_CONTAINER(box), buttBoxOpen);
-    gtk_container_add(GTK_CONTAINER(box), buttBoxRoad);
+    // gtk_container_add(GTK_CONTAINER(box), buttBoxRoad);
     gtk_container_add(GTK_CONTAINER(box), buttBoxAbout);
     
     gtk_container_add(GTK_CONTAINER(box), buttBoxExit);
 
-    gtk_widget_set_size_request(GTK_WIDGET(buttonCreate), 240, 60);
-    gtk_widget_set_size_request(GTK_WIDGET(buttonRoad), 240, 60);
-    gtk_widget_set_size_request(GTK_WIDGET(buttonOpen), 240, 60);
-    gtk_widget_set_size_request(GTK_WIDGET(buttonAbout), 240,60);
-    gtk_widget_set_size_request(GTK_WIDGET(buttonExit), 240, 60);
+    gtk_widget_set_size_request(GTK_WIDGET(buttonCreate), 230, 60);
+    // gtk_widget_set_size_request(GTK_WIDGET(buttonRoad), 230, 60);
+    gtk_widget_set_size_request(GTK_WIDGET(buttonOpen), 230, 60);
+    gtk_widget_set_size_request(GTK_WIDGET(buttonAbout), 230,60);
+    gtk_widget_set_size_request(GTK_WIDGET(buttonExit), 230, 60);
 
     
-    
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonCreate), "button");
-    gtk_style_context_add_class(gtk_widget_get_style_context(buttonRoad), "button");
+    // gtk_style_context_add_class(gtk_widget_get_style_context(buttonRoad), "button");
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonOpen), "button");
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonAbout), "button");
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonExit), "button");
     
 
     gtk_style_context_add_class(gtk_widget_get_style_context(buttBoxCreate), "button-box");
-    gtk_style_context_add_class(gtk_widget_get_style_context(buttBoxRoad), "button-box");
+    // gtk_style_context_add_class(gtk_widget_get_style_context(buttBoxRoad), "button-box");
     gtk_style_context_add_class(gtk_widget_get_style_context(buttBoxOpen), "button-box");
     gtk_style_context_add_class(gtk_widget_get_style_context(buttBoxAbout), "button-box");
     gtk_style_context_add_class(gtk_widget_get_style_context(buttBoxExit), "button-box");
@@ -454,7 +523,7 @@ static void activate (GtkApplication *app, gpointer user_data) {
 
      
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonCreate), "buttonCreate");
-    gtk_style_context_add_class(gtk_widget_get_style_context(buttonRoad), "buttonRoad");
+    // gtk_style_context_add_class(gtk_widget_get_style_context(buttonRoad), "buttonRoad");
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonOpen), "buttonOpen");
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonAbout), "buttonAbout");
     gtk_style_context_add_class(gtk_widget_get_style_context(buttonExit), "buttonExit");
@@ -464,7 +533,7 @@ static void activate (GtkApplication *app, gpointer user_data) {
     mainwindow = gtk_application_window_new (app);
     gtk_window_set_position(GTK_WINDOW(mainwindow), GTK_WIN_POS_CENTER);
     gtk_window_set_title (GTK_WINDOW (mainwindow), "SUPER GRAFOS");
-    gtk_window_set_default_size (GTK_WINDOW (mainwindow), 400, 650);
+    gtk_window_set_default_size (GTK_WINDOW (mainwindow), 450, 650);
     gtk_window_set_resizable(GTK_WINDOW(mainwindow), FALSE);
 
 
