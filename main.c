@@ -238,7 +238,7 @@ static void openFile (GtkApplication* app, gpointer user_data) {
             int valor;
             char caracter;
         
-            file = fopen("matriz.txt", "r"); //Abre el archivo en modo lectura
+            file = fopen(path, "r"); //Abre el archivo en modo lectura
 
             // Save data for in array 
             while((caracter = fgetc(file)) != EOF) { //Lee caracter por caracter hasta el fin del archivo
